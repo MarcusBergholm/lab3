@@ -39,7 +39,7 @@ void createGraph() {
 }
 
 vector<Edge*> genPath() {
-    cout << "FIND PATH" << endl;
+    //cout << "FIND PATH" << endl;
     queue<int> queue;
     int current;
     queue.push(first);
@@ -51,13 +51,13 @@ vector<Edge*> genPath() {
 
         if(current == 0) {}
         else {
-            for(int i = 0; i < vertices[current].size(); ++i) {
+            for(size_t i = 0; i < vertices[current].size(); ++i) {
                 Edge * e = vertices[current][i];
                 if(path[e->sink] == nullptr) {
                     if(e->capacity > e->flow && e->sink != first) {
                         path[e->sink] = vertices[current][i];
-                        cout << e->origin << " ";
-                        cout << e->sink << endl;
+                        //cout << e->origin << " ";
+                        //cout << e->sink << endl;
                         queue.push(e->sink);
                     }
                 }
@@ -65,11 +65,12 @@ vector<Edge*> genPath() {
         }
     }
 
-    cout << "DONE PATH" << endl;
+    //cout << "DONE PATH" << endl;
     return path;
 }
 
 int findMaxFlow() {
+    int tf = 0;
     while(true) {
         auto path = genPath();
         if(path[last] == nullptr) {
@@ -81,9 +82,9 @@ int findMaxFlow() {
         vector<Edge*> origins;
         origins.push_back(path[last]);
 
-        cout << "FIND RCAP" << endl;
+        //cout << "FIND RCAP" << endl;
         while(true) {
-            cout << pos << endl;
+            //cout << pos << endl;
             pos = path[pos]->origin;
             if(pos == 1) {
                 break;
@@ -93,12 +94,13 @@ int findMaxFlow() {
                 rCap = (path[pos]->capacity) - (path[pos]->flow);
             }
         }
-        cout << "DONE RCAP" << endl;
+        //cout << "DONE RCAP" << endl;
 
         for(Edge * e : origins) {
             e->flow = (e->flow) + rCap;
             e->rev->flow = (e->rev->flow) - rCap;
         }
+	tf += rCap;
     }
 
     int maxFlow = 0;
@@ -106,8 +108,9 @@ int findMaxFlow() {
         maxFlow += e->flow;
     }
 
-    cout << endl << "MAX FLOW" << endl << maxFlow << endl;
-    return maxFlow;
+    //cout << endl << "MAX FLOW" << endl << maxFlow << endl;
+    //cout << endl << "TEST MAX FLOW" << endl << tf << endl;
+    return tf;
 }
 
 int main() {
@@ -127,7 +130,7 @@ int main() {
     int edges = 0;
     out << v << endl;
     out << first << " " << last << " " << maxFlow << endl;
-    for(int i = 0; i < vertices.size(); ++i) {
+    for(size_t i = 1; i < vertices.size(); ++i) {
         for(Edge * e : vertices[i]) {
             if(e->flow > 0) {
                 edges++;
@@ -138,6 +141,7 @@ int main() {
     }
     out << edges << endl;
     out << temp.str();
+    cout << out;
     return 0;
 }
 
