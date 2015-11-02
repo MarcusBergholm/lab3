@@ -69,21 +69,25 @@ vector<Edge*> genPath() {
     return path;
 }
 
-void findMaxFlow() {
+int findMaxFlow() {
     while(true) {
         auto path = genPath();
-        int pos = last;
-        int rCap = (path[last]->capacity) - (path[last]->flow);
-        vector<Edge*> origins;
         if(path[last] == nullptr) {
             break;
         }
 
+        int pos = last;
+        int rCap = (path[last]->capacity) - (path[last]->flow);
+        vector<Edge*> origins;
         origins.push_back(path[last]);
+
         cout << "FIND RCAP" << endl;
-        while(pos > 2) {
+        while(true) {
             cout << pos << endl;
             pos = path[pos]->origin;
+            if(pos == 1) {
+                break;
+            }
             origins.push_back(path[pos]);
             if(rCap > (path[pos]->capacity) - (path[pos]->flow)) {
                 rCap = (path[pos]->capacity) - (path[pos]->flow);
@@ -97,14 +101,13 @@ void findMaxFlow() {
         }
     }
 
-    // cout << endl;
-    // for(Edge * e: path) {
-    //     if(e == nullptr) {
+    int maxFlow = 0;
+    for(Edge * e : vertices[first]) {
+        maxFlow += e->flow;
+    }
 
-    //     } else {
-    //         cout << e->origin << " " << e->sink << endl;
-    //     }
-    // }
+    cout << endl << "MAX FLOW" << endl << maxFlow << endl;
+    return maxFlow;
 }
 
 int main() {
@@ -112,11 +115,29 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
 
+    // Read vertices, start- , end-vertice and tot edges.
     cin >> v >> first >> last >> e;
 
     createGraph();
-    findMaxFlow();
+    int maxFlow = findMaxFlow();
 
+    //Output data
+    stringstream out;
+    stringstream temp;
+    int edges = 0;
+    out << v << endl;
+    out << first << " " << last << " " << maxFlow << endl;
+    for(int i = 0; i < vertices.size(); ++i) {
+        for(Edge * e : vertices[i]) {
+            if(e->flow > 0) {
+                edges++;
+                temp << e->origin << " " << e->sink << " " << e->flow << endl;
+            }
+            delete e;
+        }
+    }
+    out << edges << endl;
+    out << temp.str();
     return 0;
 }
 
