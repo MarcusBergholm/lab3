@@ -41,7 +41,7 @@ void createGraph() {
 vector<Edge*> genPath() {
     //cout << "FIND PATH" << endl;
     queue<int> queue;
-    int current;
+    int current = first;
     queue.push(first);
     vector<Edge*> path(v+1, nullptr);
 
@@ -49,20 +49,17 @@ vector<Edge*> genPath() {
         current = queue.front();
         queue.pop();
 
-        if(current == 0) {}
-        else {
-            for(size_t i = 0; i < vertices[current].size(); ++i) {
-                Edge * e = vertices[current][i];
-                if(path[e->sink] == nullptr) {
-                    if(e->capacity > e->flow && e->sink != first) {
-                        path[e->sink] = vertices[current][i];
-                        //cout << e->origin << " ";
-                        //cout << e->sink << endl;
-                        queue.push(e->sink);
-                    }
+        for(size_t i = 0; i < vertices[current].size(); ++i) {
+            Edge * e = vertices[current][i];
+            if(path[e->sink] == nullptr) {
+                if(e->capacity > e->flow && e->sink != first) {
+                    path[e->sink] = vertices[current][i];
+                    //cout << e->origin << " ";
+                    //cout << e->sink << endl;
+                    queue.push(e->sink);
                 }
             }
-        }
+        }  
     }
 
     //cout << "DONE PATH" << endl;
@@ -86,7 +83,7 @@ int findMaxFlow() {
         while(true) {
             //cout << pos << endl;
             pos = path[pos]->origin;
-            if(pos == 1) {
+            if(pos == first) {
                 break;
             }
             origins.push_back(path[pos]);
@@ -141,7 +138,7 @@ int main() {
     }
     out << edges << endl;
     out << temp.str();
-    cout << out;
+    cout << out.str();
     return 0;
 }
 
